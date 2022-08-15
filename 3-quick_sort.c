@@ -1,78 +1,97 @@
 #include "sort.h"
-void swap(int *array, size_t i, size_t j, size_t size);
-void helper(int *array, size_t size, size_t lo, size_t hi);
-size_t partition(int *array, size_t size, size_t lo, size_t hi);
+
 /**
- * quick_sort - quick sort array
- * @array: array
- * @size: size of array
+ * swap - Swaps two elements
+ * @i: i
+ * @j: j
+ */
+
+void swap(int *i, int *j)
+{
+	int temp = 0;
+
+	temp = *i;
+	*i = *j;
+	*j = temp;
+}
+
+/**
+ * partition - Partition
+ *
+ * @array: Given array.
+ * @size: Size of given array.
+ * @start: start
+ * @pivot: pivot
+ *
+ * Return: pivot
+ */
+
+int partition(int *array, size_t size, size_t start, size_t pivot)
+{
+	size_t i;
+
+	for (i = start; i < pivot; i++)
+	{
+		if (array[i] < array[pivot])
+		{
+			if (i != start)
+			{
+				swap(&array[start], &array[i]);
+				print_array(array, size);
+			}
+			start++;
+		}
+	}
+	if (array[start] > array[pivot])
+	{
+		swap(&array[start], &array[pivot]);
+		pivot = start;
+		print_array(array, size);
+	}
+	return (pivot);
+}
+
+/**
+ * lquick - lquick
+ *
+ * @array: Given array.
+ * @size: Size of given array.
+ * @start: Start
+ * @end: End
+ *
+ */
+
+void lquick(int *array, size_t size, size_t start, size_t end)
+{
+	size_t split;
+
+
+	if (end == 0 || end <= start)
+	{
+		return;
+	}
+	split = partition(array, size, start, end);
+	if (split != 0 && split >= start)
+	{
+		lquick(array, size, start, split - 1);
+	}
+	if (split < size - 1)
+	{
+		lquick(array, size, split + 1, end);
+	}
+
+}
+
+/**
+ * quick_sort - Sorts using the quick sort algorithm
+ *
+ * @array: Given array.
+ * @size: Size of given array.
  */
 void quick_sort(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
-	helper(array, size, 0, size - 1);
-}
-/**
- * helper - helper of quick_sort function
- * @array: new array to sort
- * @size: size of new array
- * @lo: lower bound
- * @hi: upper bound
- */
-void helper(int *array, size_t size, size_t lo, size_t hi)
-{
-	size_t p;
 
-	if (lo < hi)
-	{
-		p = partition(array, size, lo, hi);
-		if (p > 0)
-			helper(array, size, lo, p - 1);
-		helper(array, size, p + 1, hi);
-	}
-}
-/**
- * partition - place pivot and partition the array
- * @array: array
- * @size: size
- * @lo: lower bound
- * @hi: upper bound
- *
- * Return: pivot index
- */
-size_t partition(int *array, size_t size, size_t lo, size_t hi)
-{
-	int pivot;
-	size_t i, j;
-
-	for (i = lo, j = lo, pivot = array[hi]; j < hi; j++)
-	{
-		if (array[j] < pivot)
-		{
-			if (i != j)
-				swap(array, i, j, size);
-			i++;
-		}
-	}
-	if (i != hi && array[i] != array[hi])
-		swap(array, i, hi, size);
-	printf("i = %d\n", array[i]);
-	return (i);
-}
-/**
- * swap - swap two elements and print array
- * @array: array
- * @i: i
- * @j: j
- * @size: size
- */
-void swap(int *array, size_t i, size_t j, size_t size)
-{
-	int tmp;
-
-	tmp = array[i];
-	array[i] = array[j];
-	array[j] = tmp;
-	print_array(array, size);
+	lquick(array, size, 0, size - 1);
 }
